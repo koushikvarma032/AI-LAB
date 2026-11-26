@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}RuleBus - My Bookings{% endblock %}
+
+{% block content %}
+<div class="container page-container">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-list-check"></i> My Bookings</h1>
+        <p>View past bookings and manage ticket cancellations using Rule-Based refund logic.</p>
+    </div>
+
+    {% if bookings %}
+        <div class="bookings-grid">
+            {% for b in bookings %}
+            <div class="card booking-card">
+                <div class="booking-card-header">
+                    <div class="b-id">
+                        <strong>ID: {{ b.booking_id }}</strong>
+                        <small>Booked on {{ b.created_at }}</small>
+                    </div>
+                    <span class="status-badge status-{{ b.status.lower() }}">
+                        {% if b.status == 'CONFIRMED' %}
+                            <i class="fa-solid fa-circle-check"></i> CONFIRMED
+                        {% elif b.status == 'CANCELLED' %}
+                            <i class="fa-solid fa-ban"></i> CANCELLED
+                        {% else %}
+                            {{ b.status }}
+                        {% endif %}
+                    </span>
+                </div>
+
+                <div class="booking-card-body">
+                    <div class="b-info-grid">
+                        <div>
+                            <label>Bus Operator</label>
+                            <p><strong>{{ b.bus_name }}</strong> ({{ b.bus_number }})</p>
+                        </div>
+                        <div>
+                            <label>Route</label>
+                            <p><strong>{{ b.source }} → {{ b.destination }}</strong></p>
+                        </div>
+                        <div>
+                            <label>Travel Date & Time</label>
+                            <p><strong>{{ b.travel_date }}</strong> ({{ b.departure_time }})</p>
+                        </div>
+                        <div>
+                            <label>Amount Paid</label>
+                            <p class="text-primary font-weight-bold">₹{{ "%.2f"|format(b.total_amount) }}</p>
+                        </div>
+                    </div>
+
+                    {% if b.status == 'CANCELLED' %}
+                        <div class="alert alert-warning mt-3">
+                            <i class="fa-solid fa-circle-info"></i> Ticket Cancelled. Refund Amount: <strong>₹{{ "%.2f"|format(b.refund_amount) }}</strong> processed.
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="booking-card-footer flex-between">
+                    <a href="{{ url_for('view_confirmation', booking_id=b.booking_id) }}" class="btn btn-outline">
+                        <i class="fa-solid fa-ticket"></i> View Ticket & Rule Log
+                    </a>
+
+                    {% if b.status == 'CONFIRMED' %}
+                        <button type="button" class="btn btn-danger open-cancel-modal" 
+                                data-booking-id="{{ b.booking_id }}"
+                                data-bus-name="{{ b.bus_name }}"
+                                data-route="{{ b.source }} → {{ b.destination }}"
+                                data-date="{{ b.travel_date }}"
+                                data-time="{{ b.departure_time }}"
+                                data-amount="{{ b.total_amount }}">
+                            <i class="fa-solid fa-xmark"></i> Cancel Booking
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card empty-card text-center">
+            <i class="fa-solid fa-ticket empty-icon"></i>
+            <h3>No Bookings Found</h3>
+            <p>You haven't made any bus bookings yet.</p>
+            <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg mt-3">
+                <i class="fa-solid fa-magnifying-glass"></i> Search Buses & Book Ticket
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Cancellation Modal -->
+<div class="modal-backdrop" id="cancelModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3><i class="fa-solid fa-triangle-exclamation text-danger"></i> Cancel Booking Refund Evaluation</h3>
+            <button type="button" class="modal-close" id="closeModalBtn">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Evaluating Python Cancellation Rule for <strong id="modalBookingId"></strong>...</p>
+            
+            <div class="refund-eval-box mt-3" id="refundEvalBox">
+                <div class="eval-loading text-center">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Calculating refund using Python Rule Engine...
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelModalClose">Keep Booking</button>
+            <form action="" method="POST" id="confirmCancelForm" style="display: inline;">
+                <button type="submit" class="btn btn-danger" id="confirmCancelBtn" disabled>
+                    Confirm Cancellation
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

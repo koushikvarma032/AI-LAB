@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}RuleBus - How the Rules Work (Rule-Based Programming){% endblock %}
+
+{% block content %}
+<div class="container page-container">
+    <div class="page-header text-center">
+        <h1><i class="fa-solid fa-gears"></i> How the Rule Engine Works</h1>
+        <p>Understanding Rule-Based Programming (RBP) vs Machine Learning & Artificial Intelligence</p>
+    </div>
+
+    <!-- Viva Visual Flow Diagram Card (Requirement #15) -->
+    <div class="card visual-flow-card mb-5">
+        <div class="card-header bg-gradient text-white text-center">
+            <h2><i class="fa-solid fa-diagram-next"></i> System Execution Workflow (Input → Decision → Output)</h2>
+        </div>
+        <div class="card-body">
+            <div class="viva-flowchart">
+                <div class="flow-box flow-input">
+                    <div class="flow-icon"><i class="fa-solid fa-user-clock"></i></div>
+                    <strong>1. User Input</strong>
+                    <small>Passenger Age = 10 <br> Base Fare = ₹500</small>
+                </div>
+
+                <div class="flow-connector"><i class="fa-solid fa-chevron-right"></i></div>
+
+                <div class="flow-box flow-engine">
+                    <div class="flow-icon"><i class="fa-solid fa-microchip"></i></div>
+                    <strong>2. Python Rule Engine</strong>
+                    <small>Evaluates matching rule in <code>fare_rules.py</code></small>
+                </div>
+
+                <div class="flow-connector"><i class="fa-solid fa-chevron-right"></i></div>
+
+                <div class="flow-box flow-rule">
+                    <div class="flow-icon"><i class="fa-solid fa-code-branch"></i></div>
+                    <strong>3. Rule Triggered</strong>
+                    <small><code>IF age &ge; 5 AND age &le; 12</code> <br> Apply 50% Child Discount</small>
+                </div>
+
+                <div class="flow-connector"><i class="fa-solid fa-chevron-right"></i></div>
+
+                <div class="flow-box flow-output">
+                    <div class="flow-icon"><i class="fa-solid fa-circle-check"></i></div>
+                    <strong>4. Final Output</strong>
+                    <small>Discount = ₹250 <br> <strong>Final Fare = ₹250</strong></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interactive RBP Simulator Box -->
+    <div class="card simulator-card mb-5">
+        <div class="card-header bg-dark text-white">
+            <h3><i class="fa-solid fa-flask"></i> Interactive Rule Simulator (Live Test)</h3>
+            <small>Test the Python Rule Engine in real-time right here</small>
+        </div>
+        <div class="card-body">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="simAge">Passenger Age</label>
+                    <input type="number" id="simAge" class="form-control" value="10" min="1" max="110">
+                </div>
+                <div class="form-group">
+                    <label for="simBaseFare">Base Ticket Fare (₹)</label>
+                    <input type="number" id="simBaseFare" class="form-control" value="500">
+                </div>
+                <div class="form-group">
+                    <label for="simGroupCount">Group Size (Passengers)</label>
+                    <input type="number" id="simGroupCount" class="form-control" value="2" min="1" max="10">
+                </div>
+                <div class="form-group">
+                    <label for="simIsWeekend">Travel Day</label>
+                    <select id="simIsWeekend" class="form-control">
+                        <option value="weekday">Weekday (Mon-Fri)</option>
+                        <option value="weekend">Weekend (Sat-Sun)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="sim-results-box mt-4">
+                <h4>Engine Decision Output</h4>
+                <div class="sim-output-grid">
+                    <div class="sim-card">
+                        <span class="sim-label">Age Rule Triggered</span>
+                        <strong class="sim-val text-primary" id="simAgeRuleText">Child Discount (50%)</strong>
+                    </div>
+                    <div class="sim-card">
+                        <span class="sim-label">Passenger Fare</span>
+                        <strong class="sim-val text-success" id="simPassengerFare">₹250.00</strong>
+                    </div>
+                    <div class="sim-card">
+                        <span class="sim-label">Group Discount</span>
+                        <strong class="sim-val text-info" id="simGroupDiscText">Not Applied (0%)</strong>
+                    </div>
+                    <div class="sim-card">
+                        <span class="sim-label">Weekend Surcharge</span>
+                        <strong class="sim-val text-warning" id="simWeekendText">Not Applied (0%)</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formal Predefined Rules Catalog -->
+    <div class="section-header mt-5">
+        <h2>Complete Predefined Rule Catalog</h2>
+        <p>All business decisions in RuleBus are governed by these exact Python functions.</p>
+    </div>
+
+    <div class="rules-catalog-grid">
+        <!-- Rule Card 1: Seat Availability -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Seat Module</span>
+                <h3>Seat Availability & Capacity Rule</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF requested_seats <= available_seats
+THEN allow_booking = True
+ELSE
+THEN reject_booking = "Not enough seats available."
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> Requested 2 seats, Available 30 → Booking Allowed.
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule Card 2: Passenger Age Discounts -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Fare Module</span>
+                <h3>Passenger Age Discount Rules</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF age < 5
+THEN ticket_fare = FREE (100% discount)
+
+IF age >= 5 AND age <= 12
+THEN apply 50% Child Discount
+
+IF age >= 60
+THEN apply 10% Senior Citizen Discount
+
+IF age > 12 AND age < 60
+THEN charge Normal Fare
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> Base Fare ₹500, Age 10 → Child Discount 50% → Fare = ₹250.
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule Card 3: Group Booking -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Fare Module</span>
+                <h3>Group Booking Discount Rule</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF total_passengers >= 4
+THEN apply 5% Group Discount on Subtotal
+ELSE
+THEN group_discount = 0%
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> 4 passengers with subtotal ₹1,800 → 5% Off (-₹90) → Final = ₹1,710.
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule Card 4: Weekend Surcharge -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Fare Module</span>
+                <h3>Weekend Travel Surcharge Rule</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF travel_day IN ("Saturday", "Sunday")
+THEN add 10% Weekend Surcharge
+ELSE
+THEN surcharge = 0%
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> Base ₹1,000 on Saturday → 10% Surcharge (+₹100) → Total = ₹1,100.
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule Card 5: Booking Confirmation Status -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Status Module</span>
+                <h3>Booking Status Determination Rule</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF payment_successful == True AND seats_available == True
+THEN booking_status = "CONFIRMED"
+
+IF payment_successful == False
+THEN booking_status = "PAYMENT FAILED"
+
+IF seats_available == False
+THEN booking_status = "REJECTED"
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> Seats available & UPI payment successful → Status: CONFIRMED.
+                </div>
+            </div>
+        </div>
+
+        <!-- Rule Card 6: Cancellation Refund Rules -->
+        <div class="card rule-catalog-card">
+            <div class="rule-card-header">
+                <span class="rule-badge">Refund Module</span>
+                <h3>Time-Tiered Cancellation Refund Rules</h3>
+            </div>
+            <div class="rule-card-body">
+                <div class="pseudocode">
+<pre>
+IF hours_before_departure > 24
+THEN refund = 80% (20% fee)
+
+IF hours_before_departure >= 12 AND <= 24
+THEN refund = 50% (50% fee)
+
+IF hours_before_departure < 12
+THEN refund = 0% (100% fee)
+</pre>
+                </div>
+                <div class="rule-example">
+                    <strong>Example:</strong> Ticket ₹1,000 cancelled 30 hrs before departure → Refund = ₹800.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Live Rule Simulator Script
+    function updateSimulator() {
+        const age = parseInt(document.getElementById('simAge').value) || 0;
+        const baseFare = parseFloat(document.getElementById('simBaseFare').value) || 0;
+        const groupCount = parseInt(document.getElementById('simGroupCount').value) || 1;
+        const isWeekend = document.getElementById('simIsWeekend').value === 'weekend';
+
+        let ageRuleText = "Normal Fare";
+        let discPercent = 0;
+
+        if (age < 5) {
+            ageRuleText = "Infant Free Ticket (100%)";
+            discPercent = 1.0;
+        } else if (age >= 5 && age <= 12) {
+            ageRuleText = "Child Discount (50%)";
+            discPercent = 0.50;
+        } else if (age >= 60) {
+            ageRuleText = "Senior Citizen Discount (10%)";
+            discPercent = 0.10;
+        }
+
+        const passengerFare = baseFare * (1 - discPercent);
+        const subtotal = passengerFare * groupCount;
+
+        let groupDiscText = "Not Applied (0%)";
+        let groupDiscVal = 0;
+        if (groupCount >= 4) {
+            groupDiscVal = subtotal * 0.05;
+            groupDiscText = `Applied 5% (-₹${groupDiscVal.toFixed(2)})`;
+        }
+
+        let weekendText = "Not Applied (0%)";
+        let weekendVal = 0;
+        if (isWeekend) {
+            weekendVal = (baseFare * groupCount) * 0.10;
+            weekendText = `Applied 10% (+₹${weekendVal.toFixed(2)})`;
+        }
+
+        document.getElementById('simAgeRuleText').innerText = ageRuleText;
+        document.getElementById('simPassengerFare').innerText = `₹${passengerFare.toFixed(2)}`;
+        document.getElementById('simGroupDiscText').innerText = groupDiscText;
+        document.getElementById('simWeekendText').innerText = weekendText;
+    }
+
+    document.getElementById('simAge').addEventListener('input', updateSimulator);
+    document.getElementById('simBaseFare').addEventListener('input', updateSimulator);
+    document.getElementById('simGroupCount').addEventListener('input', updateSimulator);
+    document.getElementById('simIsWeekend').addEventListener('change', updateSimulator);
+    updateSimulator();
+</script>
+{% endblock %}

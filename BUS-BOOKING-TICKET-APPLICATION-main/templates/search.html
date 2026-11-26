@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block title %}RuleBus - Search Buses{% endblock %}
+
+{% block content %}
+<div class="container page-container">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-bus"></i> Search Bus Routes</h1>
+        <p>Find available buses and proceed to interactive seat selection.</p>
+    </div>
+
+    <!-- Search Form Card -->
+    <div class="card search-card">
+        <form action="{{ url_for('search') }}" method="GET" class="search-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="source"><i class="fa-solid fa-location-dot"></i> Source City</label>
+                    <select name="source" id="source" class="form-control" required>
+                        <option value="">Select Source</option>
+                        {% for city in cities %}
+                            <option value="{{ city }}" {% if selected_source == city %}selected{% endif %}>{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="destination"><i class="fa-solid fa-location-arrow"></i> Destination City</label>
+                    <select name="destination" id="destination" class="form-control" required>
+                        <option value="">Select Destination</option>
+                        {% for city in cities %}
+                            <option value="{{ city }}" {% if selected_destination == city %}selected{% endif %}>{{ city }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="travel_date"><i class="fa-solid fa-calendar-days"></i> Travel Date</label>
+                    <input type="date" name="travel_date" id="travel_date" class="form-control" value="{{ selected_date }}" required min="{{ today_date }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="passengers"><i class="fa-solid fa-users"></i> Passengers</label>
+                    <select name="passengers" id="passengers" class="form-control">
+                        {% for n in range(1, 7) %}
+                            <option value="{{ n }}" {% if selected_passengers == n %}selected{% endif %}>{{ n }} Passenger{% if n > 1 %}s{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions text-right mt-3">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-magnifying-glass"></i> Find Buses
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Results Section -->
+    <div class="results-section mt-4">
+        {% if searched %}
+            <div class="results-header">
+                <h2>Available Buses ({{ buses|length }})</h2>
+                <span class="route-badge"><i class="fa-solid fa-route"></i> {{ selected_source }} to {{ selected_destination }} | {{ selected_date }}</span>
+            </div>
+
+            {% if buses %}
+                <div class="bus-list">
+                    {% for bus in buses %}
+                    <div class="bus-card">
+                        <div class="bus-info">
+                            <div class="bus-title-row">
+                                <h3>{{ bus.bus_name }}</h3>
+                                <span class="badge badge-info">{{ bus.bus_type }}</span>
+                                <span class="badge badge-secondary">{{ bus.bus_number }}</span>
+                            </div>
+                            <div class="bus-timing-row">
+                                <div class="timing-box">
+                                    <span class="time">{{ bus.departure_time }}</span>
+                                    <span class="city">{{ bus.source }}</span>
+                                </div>
+                                <div class="duration-box">
+                                    <span class="duration-line"></span>
+                                    <span class="duration-text"><i class="fa-regular fa-clock"></i> {{ bus.duration }}</span>
+                                </div>
+                                <div class="timing-box">
+                                    <span class="time">{{ bus.arrival_time }}</span>
+                                    <span class="city">{{ bus.destination }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bus-fare-seats">
+                            <div class="seats-info">
+                                <i class="fa-solid fa-chair"></i>
+                                <span><strong>{{ bus.available_seats }}</strong> Seats Left</span>
+                            </div>
+                            <div class="price-info">
+                                <span class="currency">₹</span>
+                                <span class="amount">{{ "%.0f"|format(bus.base_fare) }}</span>
+                                <span class="per-seat">/ passenger</span>
+                            </div>
+                            <a href="{{ url_for('select_seats', bus_id=bus.id, travel_date=selected_date, passengers=selected_passengers) }}" class="btn btn-success">
+                                Select Seats <i class="fa-solid fa-chevron-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="card empty-card text-center">
+                    <i class="fa-solid fa-bus-slash empty-icon"></i>
+                    <h3>No Buses Found</h3>
+                    <p>No available buses found for {{ selected_source }} to {{ selected_destination }}. Try searching for <strong>Ahmedabad to Rajkot</strong>, <strong>Mumbai to Pune</strong>, or <strong>Delhi to Jaipur</strong>.</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <!-- Recommended Popular Routes Showcase -->
+            <div class="results-header">
+                <h2>Popular Routes (Quick Select)</h2>
+            </div>
+            <div class="popular-routes-grid">
+                <a href="{{ url_for('search', source='Ahmedabad', destination='Rajkot', travel_date=today_date, passengers=2) }}" class="route-card">
+                    <div class="route-icon"><i class="fa-solid fa-bus"></i></div>
+                    <div class="route-details">
+                        <h4>Ahmedabad → Rajkot</h4>
+                        <p>5.0 hrs | Base Fare: ₹500</p>
+                        <span class="btn-link">View Route <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('search', source='Mumbai', destination='Pune', travel_date=today_date, passengers=1) }}" class="route-card">
+                    <div class="route-icon"><i class="fa-solid fa-bus"></i></div>
+                    <div class="route-details">
+                        <h4>Mumbai → Pune</h4>
+                        <p>3.5 hrs | Base Fare: ₹400</p>
+                        <span class="btn-link">View Route <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('search', source='Bangalore', destination='Chennai', travel_date=today_date, passengers=1) }}" class="route-card">
+                    <div class="route-icon"><i class="fa-solid fa-bus"></i></div>
+                    <div class="route-details">
+                        <h4>Bangalore → Chennai</h4>
+                        <p>7.0 hrs | Base Fare: ₹750</p>
+                        <span class="btn-link">View Route <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('search', source='Delhi', destination='Jaipur', travel_date=today_date, passengers=1) }}" class="route-card">
+                    <div class="route-icon"><i class="fa-solid fa-bus"></i></div>
+                    <div class="route-details">
+                        <h4>Delhi → Jaipur</h4>
+                        <p>5.5 hrs | Base Fare: ₹550</p>
+                        <span class="btn-link">View Route <i class="fa-solid fa-arrow-right"></i></span>
+                    </div>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

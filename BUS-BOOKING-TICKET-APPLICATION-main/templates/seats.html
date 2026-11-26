@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}RuleBus - Select Seats{% endblock %}
+
+{% block content %}
+<div class="container page-container">
+    <div class="page-header">
+        <h1><i class="fa-solid fa-chair"></i> Select Your Seats</h1>
+        <p>Choose <strong>{{ required_passengers }}</strong> seat(s) for your journey on {{ bus.bus_name }}.</p>
+    </div>
+
+    <div class="seat-booking-wrapper">
+        <!-- Bus Summary Card -->
+        <div class="card bus-summary-card">
+            <div class="summary-item">
+                <span class="label">Bus Name</span>
+                <span class="value">{{ bus.bus_name }} ({{ bus.bus_number }})</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Route</span>
+                <span class="value">{{ bus.source }} → {{ bus.destination }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Travel Date</span>
+                <span class="value">{{ travel_date }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Departure</span>
+                <span class="value">{{ bus.departure_time }}</span>
+            </div>
+            <div class="summary-item">
+                <span class="label">Base Fare</span>
+                <span class="value text-primary">₹{{ "%.0f"|format(bus.base_fare) }} / seat</span>
+            </div>
+        </div>
+
+        <!-- Seat Layout Grid & Form -->
+        <div class="card seat-layout-card">
+            <div class="seat-legend">
+                <div class="legend-item">
+                    <span class="seat-box available"></span> Available
+                </div>
+                <div class="legend-item">
+                    <span class="seat-box selected"></span> Selected
+                </div>
+                <div class="legend-item">
+                    <span class="seat-box booked"></span> Booked
+                </div>
+            </div>
+
+            <div class="bus-container">
+                <div class="driver-section">
+                    <span class="steering"><i class="fa-solid fa-dharmachakra"></i> Driver</span>
+                </div>
+
+                <!-- 2x2 Grid Layout for 30 seats (Rows A, B, C, D, E, F, G, H...) -->
+                <div class="seat-grid" id="seatGrid">
+                    {% for row_idx in range(1, 8) %}
+                        {% set r_letter = ("ABCDEFGH")[row_idx-1] %}
+                        <div class="seat-row">
+                            <!-- Left Pair -->
+                            <div class="seat-pair">
+                                {% set s1 = r_letter ~ "1" %}
+                                <button type="button" 
+                                        class="seat-btn {% if s1 in booked_seats %}booked{% endif %}" 
+                                        data-seat="{{ s1 }}" 
+                                        {% if s1 in booked_seats %}disabled{% endif %}>
+                                    {{ s1 }}
+                                </button>
+                                {% set s2 = r_letter ~ "2" %}
+                                <button type="button" 
+                                        class="seat-btn {% if s2 in booked_seats %}booked{% endif %}" 
+                                        data-seat="{{ s2 }}" 
+                                        {% if s2 in booked_seats %}disabled{% endif %}>
+                                    {{ s2 }}
+                                </button>
+                            </div>
+
+                            <!-- Aisle -->
+                            <div class="aisle"></div>
+
+                            <!-- Right Pair -->
+                            <div class="seat-pair">
+                                {% set s3 = r_letter ~ "3" %}
+                                <button type="button" 
+                                        class="seat-btn {% if s3 in booked_seats %}booked{% endif %}" 
+                                        data-seat="{{ s3 }}" 
+                                        {% if s3 in booked_seats %}disabled{% endif %}>
+                                    {{ s3 }}
+                                </button>
+                                {% set s4 = r_letter ~ "4" %}
+                                <button type="button" 
+                                        class="seat-btn {% if s4 in booked_seats %}booked{% endif %}" 
+                                        data-seat="{{ s4 }}" 
+                                        {% if s4 in booked_seats %}disabled{% endif %}>
+                                    {{ s4 }}
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <!-- Back Row (2 seats) -->
+                    <div class="seat-row">
+                        <div class="seat-pair">
+                            {% set s1 = "H1" %}
+                            <button type="button" class="seat-btn {% if s1 in booked_seats %}booked{% endif %}" data-seat="{{ s1 }}" {% if s1 in booked_seats %}disabled{% endif %}>{{ s1 }}</button>
+                            {% set s2 = "H2" %}
+                            <button type="button" class="seat-btn {% if s2 in booked_seats %}booked{% endif %}" data-seat="{{ s2 }}" {% if s2 in booked_seats %}disabled{% endif %}>{{ s2 }}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seat Selection Form -->
+            <form action="{{ url_for('passenger_details') }}" method="POST" id="seatSelectionForm" class="mt-4">
+                <input type="hidden" name="bus_id" value="{{ bus.id }}">
+                <input type="hidden" name="travel_date" value="{{ travel_date }}">
+                <input type="hidden" name="passengers_count" value="{{ required_passengers }}">
+                <input type="hidden" name="selected_seats" id="selectedSeatsInput" value="">
+
+                <div class="selection-status-box">
+                    <p>Selected Seats: <strong id="selectedSeatsText" class="text-primary">None</strong> (<span id="selectedCountText">0</span>/{{ required_passengers }})</p>
+                </div>
+
+                <div class="form-actions flex-between mt-3">
+                    <a href="{{ url_for('search', source=bus.source, destination=bus.destination, travel_date=travel_date) }}" class="btn btn-secondary">
+                        <i class="fa-solid fa-arrow-left"></i> Change Bus
+                    </a>
+                    <button type="submit" id="submitSeatsBtn" class="btn btn-primary btn-lg" disabled>
+                        Continue to Passenger Details <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

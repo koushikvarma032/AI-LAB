@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}RuleBus - Home | Rule-Based Bus Booking System{% endblock %}
+
+{% block content %}
+<section class="hero-section">
+    <div class="container hero-container">
+        <div class="hero-content">
+            <span class="hero-tag"><i class="fa-solid fa-code"></i> Academic Demonstration of Rule-Based Programming</span>
+            <h1 class="hero-title">Smart Bus Booking Powered by <span class="text-gradient">Rule-Based Programming</span></h1>
+            <p class="hero-description">
+                RuleBus demonstrates <strong>Rule-Based Programming (RBP)</strong>. Every decision — from seat availability and age discounts to group pricing and cancellation refunds — is made using <strong>explicit, predefined IF–THEN rules</strong> evaluated by a Python Rule Engine.
+            </p>
+            <div class="hero-actions">
+                <a href="{{ url_for('search') }}" class="btn btn-primary btn-lg">
+                    <i class="fa-solid fa-ticket"></i> Book a Ticket
+                </a>
+                <a href="{{ url_for('bookings') }}" class="btn btn-secondary btn-lg">
+                    <i class="fa-solid fa-list-check"></i> View Bookings
+                </a>
+                <a href="{{ url_for('rules_page') }}" class="btn btn-outline btn-lg">
+                    <i class="fa-solid fa-gears"></i> View Rules
+                </a>
+            </div>
+        </div>
+        <div class="hero-card">
+            <div class="rbp-card-header">
+                <i class="fa-solid fa-diagram-project"></i>
+                <h3>Rule Engine Architecture</h3>
+            </div>
+            <div class="rbp-flow">
+                <div class="flow-step">
+                    <span class="step-num">1</span>
+                    <div class="step-details">
+                        <strong>Input Data</strong>
+                        <small>Age, Seats, Travel Date</small>
+                    </div>
+                </div>
+                <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="flow-step active-step">
+                    <span class="step-num">2</span>
+                    <div class="step-details">
+                        <strong>Python Rule Engine</strong>
+                        <small>Evaluates IF-THEN Rules</small>
+                    </div>
+                </div>
+                <div class="flow-arrow"><i class="fa-solid fa-arrow-down"></i></div>
+                <div class="flow-step">
+                    <span class="step-num">3</span>
+                    <div class="step-details">
+                        <strong>Deterministic Output</strong>
+                        <small>Fares, Status & Audit Logs</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- RBP Concept Explanation Cards -->
+<section class="features-section">
+    <div class="container">
+        <div class="section-header text-center">
+            <h2>Why Rule-Based Programming?</h2>
+            <p>RBP uses clear expert rules instead of black-box machine learning models.</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-sliders"></i></div>
+                <h3>Explicit IF-THEN Rules</h3>
+                <p>100% transparent decisions. If passenger age is between 5 and 12, a 50% child discount is triggered automatically.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h3>100% Deterministic</h3>
+                <p>No randomness or AI hallucinations. Identical input conditions always yield the exact same booking outcome and fare calculation.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-receipt"></i></div>
+                <h3>Rule Audit Trail</h3>
+                <p>Every booking generates a complete execution log showing which rules were evaluated, passed, or triggered.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <h3>Smart Cancellation Rules</h3>
+                <p>Time-tiered refund rules (>24h = 80%, 12-24h = 50%, <12h = 0%) calculated in real-time by the cancellation rule module.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Sample Demonstration Banner -->
+<section class="demo-banner">
+    <div class="container">
+        <div class="demo-card-box">
+            <div class="demo-text">
+                <span class="badge badge-warning"><i class="fa-solid fa-star"></i> Viva Demonstration Scenario</span>
+                <h3>Try the Ahmedabad → Rajkot Route</h3>
+                <p>Book 2 seats (Passenger 1: Age 20, Passenger 2: Age 10) to see the 50% Child Discount rule trigger live with exact breakdown ₹500 + ₹250 = ₹750!</p>
+            </div>
+            <a href="{{ url_for('search', source='Ahmedabad', destination='Rajkot') }}" class="btn btn-warning btn-lg">
+                <i class="fa-solid fa-bolt"></i> Quick Demo Search
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

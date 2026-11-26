@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RuleBus - Rule-Based Bus Ticket Booking System{% endblock %}</title>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-logo">
+                <i class="fa-solid fa-bus-simple logo-icon"></i>
+                <span class="logo-text">Rule<span class="logo-accent">Bus</span></span>
+                <span class="rbp-badge"><i class="fa-solid fa-code-branch"></i> RBP Engine</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}"><i class="fa-solid fa-house"></i> Home</a></li>
+                <li><a href="{{ url_for('search') }}" class="nav-link {% if request.endpoint == 'search' %}active{% endif %}"><i class="fa-solid fa-ticket"></i> Book Ticket</a></li>
+                <li><a href="{{ url_for('bookings') }}" class="nav-link {% if request.endpoint == 'bookings' %}active{% endif %}"><i class="fa-solid fa-list-check"></i> My Bookings</a></li>
+                <li><a href="{{ url_for('rules_page') }}" class="nav-link {% if request.endpoint == 'rules_page' %}active{% endif %}"><i class="fa-solid fa-gears"></i> How Rules Work</a></li>
+            </ul>
+
+            <div class="nav-mobile-toggle" id="mobileMenuToggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container flash-container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        <i class="fa-solid {% if category == 'danger' %}fa-circle-exclamation{% elif category == 'success' %}fa-circle-check{% else %}fa-circle-info{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Body Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <i class="fa-solid fa-bus-simple"></i> RuleBus
+                </div>
+                <p class="footer-desc">A Rule-Based Programming (RBP) Bus Ticket Booking System demonstrating deterministic decision-making without AI/ML.</p>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('search') }}">Bus Search</a></li>
+                    <li><a href="{{ url_for('bookings') }}">My Bookings</a></li>
+                    <li><a href="{{ url_for('rules_page') }}">Rule Engine Docs</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-badge-box">
+                <h4><i class="fa-solid fa-microchip"></i> RBP Architecture</h4>
+                <div class="rbp-pill"><i class="fa-solid fa-check"></i> Deterministic Rules</div>
+                <div class="rbp-pill"><i class="fa-solid fa-check"></i> SQLite Powered</div>
+                <div class="rbp-pill"><i class="fa-solid fa-check"></i> Python Flask Backend</div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 RuleBus - Rule-Based Programming Demonstration Project.</p>
+        </div>
+    </footer>
+
+    <!-- Custom Script -->
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
