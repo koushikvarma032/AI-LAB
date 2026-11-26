@@ -1,9 +1,0 @@
-Model,Accuracy (%),Precision,Recall (Pass),F1-Score,At-Risk Recall (Fail),TP,TN,FP,FN
-k-NN (Custom),90.0,0.9078,0.9846,0.9446,0.35,128,7,13,2
-Decision Tree (Custom),94.0,0.9618,0.9692,0.9655,0.75,126,15,5,4
-Naive Bayes (Custom),95.33,1.0,0.9462,0.9723,1.0,123,20,0,7
-Perceptron (Custom),96.0,0.9627,0.9923,0.9773,0.75,129,15,5,1
-k-NN (Scikit-Learn),90.0,0.9078,0.9846,0.9446,0.35,128,7,13,2
-Decision Tree (Scikit-Learn),95.33,0.9624,0.9846,0.9734,0.75,128,15,5,2
-Naive Bayes (Scikit-Learn),95.33,1.0,0.9462,0.9723,1.0,123,20,0,7
-Perceptron (Scikit-Learn),96.0,0.9921,0.9615,0.9766,0.95,125,19,1,5
