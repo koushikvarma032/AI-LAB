@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}AutoSense Nexus — Repair Comparison{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Header Banner -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-code-compare text-cyan-400"></i> BEFORE vs AFTER REPAIR COMPARISON
+            </h1>
+            <p class="text-slate-400 text-xs font-mono mt-1">
+                Compare two diagnostic evidence sets side-by-side to verify repair effectiveness and posterior probability shifts.
+            </p>
+        </div>
+
+        <button id="run-compare-btn" class="px-5 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold font-mono text-xs uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] flex items-center gap-2">
+            <i class="fa-solid fa-bolt"></i> Run Comparative Analysis
+        </button>
+    </div>
+
+    <!-- Side-by-Side Input Columns -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Column 1: BEFORE REPAIR -->
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+            <h2 class="text-sm font-mono font-bold text-rose-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left"></i> State 1: BEFORE REPAIR / INITIAL FAULT
+            </h2>
+
+            <div class="space-y-3 font-mono text-xs">
+                <div class="flex items-center justify-between">
+                    <label>Battery Voltage (V):</label>
+                    <input type="number" id="b-battery_voltage" step="0.1" value="10.7" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Alternator Voltage (V):</label>
+                    <input type="number" id="b-alternator_voltage" step="0.1" value="11.2" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Engine Idle RPM:</label>
+                    <input type="number" id="b-engine_rpm" step="10" value="720" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Engine Temperature (°C):</label>
+                    <input type="number" id="b-engine_temperature" step="0.5" value="91.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Coolant Temp (°C):</label>
+                    <input type="number" id="b-coolant_temperature" step="0.5" value="92.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Oil Pressure (PSI):</label>
+                    <input type="number" id="b-oil_pressure" step="1" value="29.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-cyan-400">
+                </div>
+                <div class="pt-2 border-t border-slate-800 space-y-2">
+                    <label class="flex items-center justify-between">
+                        <span>Slow Cranking:</span>
+                        <input type="checkbox" id="b-slow_cranking" checked class="accent-cyan-500">
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <span>Dim Headlights:</span>
+                        <input type="checkbox" id="b-dim_headlights" checked class="accent-cyan-500">
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <span>Hard Starting:</span>
+                        <input type="checkbox" id="b-hard_starting" checked class="accent-cyan-500">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Column 2: AFTER REPAIR -->
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+            <h2 class="text-sm font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-circle-check"></i> State 2: AFTER REPAIR / REPLACED COMPONENT
+            </h2>
+
+            <div class="space-y-3 font-mono text-xs">
+                <div class="flex items-center justify-between">
+                    <label>Battery Voltage (V):</label>
+                    <input type="number" id="a-battery_voltage" step="0.1" value="12.6" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400 font-bold">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Alternator Voltage (V):</label>
+                    <input type="number" id="a-alternator_voltage" step="0.1" value="14.1" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400 font-bold">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Engine Idle RPM:</label>
+                    <input type="number" id="a-engine_rpm" step="10" value="800" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Engine Temperature (°C):</label>
+                    <input type="number" id="a-engine_temperature" step="0.5" value="88.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Coolant Temp (°C):</label>
+                    <input type="number" id="a-coolant_temperature" step="0.5" value="85.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400">
+                </div>
+                <div class="flex items-center justify-between">
+                    <label>Oil Pressure (PSI):</label>
+                    <input type="number" id="a-oil_pressure" step="1" value="45.0" class="w-24 px-2 py-1 rounded bg-slate-900 border border-slate-700 text-right text-emerald-400">
+                </div>
+                <div class="pt-2 border-t border-slate-800 space-y-2">
+                    <label class="flex items-center justify-between">
+                        <span>Slow Cranking:</span>
+                        <input type="checkbox" id="a-slow_cranking" class="accent-cyan-500">
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <span>Dim Headlights:</span>
+                        <input type="checkbox" id="a-dim_headlights" class="accent-cyan-500">
+                    </label>
+                    <label class="flex items-center justify-between">
+                        <span>Hard Starting:</span>
+                        <input type="checkbox" id="a-hard_starting" class="accent-cyan-500">
+                    </label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Comparative Results Display -->
+    <div id="compare-results-container" class="hidden glass-panel rounded-2xl p-6 border border-slate-800 space-y-4">
+        <h2 class="text-sm font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-chart-line text-cyan-400"></i> Calculated Posterior Probability Shift
+        </h2>
+
+        <div id="compare-shifts-list" class="space-y-3 font-mono text-xs">
+            <!-- Dynamic comparison items -->
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/compare.js') }}"></script>
+{% endblock %}

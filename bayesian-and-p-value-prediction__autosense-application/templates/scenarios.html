@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}AutoSense Nexus — Scenario Lab{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Header Banner -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-flask text-cyan-400"></i> DIAGNOSTIC DEMONSTRATION SCENARIOS
+            </h1>
+            <p class="text-slate-400 text-xs font-mono mt-1">
+                Pre-configured real-world vehicle fault scenarios designed for academic demonstrations and viva presentations.
+            </p>
+        </div>
+    </div>
+
+    <!-- Scenarios Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for sc in scenarios %}
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800 hover:border-cyan-500/50 transition-all flex flex-col justify-between space-y-4 group">
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 text-lg group-hover:scale-110 transition-transform">
+                        <i class="fa-solid {{ sc.icon }}"></i>
+                    </div>
+                    <span class="px-2.5 py-0.5 rounded bg-slate-800 text-slate-400 font-mono text-[10px] font-bold border border-slate-700">
+                        SCENARIO {{ sc.id }}
+                    </span>
+                </div>
+
+                <h2 class="text-lg font-display font-bold text-white tracking-wide">
+                    {{ sc.title }}
+                </h2>
+
+                <p class="text-xs text-slate-300 font-sans leading-relaxed">
+                    {{ sc.description }}
+                </p>
+
+                <!-- Input Parameters Summary -->
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 font-mono text-[11px] space-y-1 text-slate-400">
+                    <div>Battery Voltage: <strong class="text-slate-200">{{ sc.inputs.battery_voltage }} V</strong></div>
+                    <div>Alternator Voltage: <strong class="text-slate-200">{{ sc.inputs.alternator_voltage }} V</strong></div>
+                    <div>Engine Temp / Coolant: <strong class="text-slate-200">{{ sc.inputs.engine_temperature }}°C / {{ sc.inputs.coolant_temperature }}°C</strong></div>
+                    <div>Oil Pressure: <strong class="text-slate-200">{{ sc.inputs.oil_pressure }} PSI</strong></div>
+                </div>
+            </div>
+
+            <button onclick='loadScenario({{ sc.inputs | tojson }})' type="button" 
+                    class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold font-mono text-xs uppercase tracking-wider transition-all shadow-[0_0_15px_rgba(6,182,212,0.3)] flex items-center justify-center gap-2">
+                <i class="fa-solid fa-play"></i> Load & Run Scenario
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loadScenario(inputs) {
+    sessionStorage.setItem('auto_scenario_inputs', JSON.stringify(inputs));
+    window.location.href = "{{ url_for('diagnostic.diagnostics_page') }}";
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // If returning to diagnostics with scenario stored in sessionStorage, populate it
+    const stored = sessionStorage.getItem('auto_scenario_inputs');
+    if (stored && window.location.pathname === '/diagnostics') {
+        const inputs = JSON.parse(stored);
+        sessionStorage.removeItem('auto_scenario_inputs');
+
+        document.getElementById('battery_voltage').value = inputs.battery_voltage;
+        document.getElementById('bat-val-display').innerText = `${inputs.battery_voltage} V`;
+
+        document.getElementById('alternator_voltage').value = inputs.alternator_voltage;
+        document.getElementById('alt-val-display').innerText = `${inputs.alternator_voltage} V`;
+
+        document.getElementById('engine_rpm').value = inputs.engine_rpm;
+        document.getElementById('rpm-val-display').innerText = `${inputs.engine_rpm} RPM`;
+
+        document.getElementById('engine_temperature').value = inputs.engine_temperature;
+        document.getElementById('engtemp-val-display').innerText = `${inputs.engine_temperature} °C`;
+
+        document.getElementById('coolant_temperature').value = inputs.coolant_temperature;
+        document.getElementById('coolant-val-display').innerText = `${inputs.coolant_temperature} °C`;
+
+        document.getElementById('oil_pressure').value = inputs.oil_pressure;
+        document.getElementById('oil-val-display').innerText = `${inputs.oil_pressure} PSI`;
+
+        document.getElementById('slow_cranking').checked = !!inputs.slow_cranking;
+        document.getElementById('hard_starting').checked = !!inputs.hard_starting;
+        document.getElementById('dim_headlights').checked = !!inputs.dim_headlights;
+        document.getElementById('engine_noise').checked = !!inputs.engine_noise;
+        document.getElementById('overheating_indicator').checked = !!inputs.overheating_indicator;
+
+        // Auto trigger diagnostic form
+        setTimeout(() => {
+            document.getElementById('diagnostic-form').dispatchEvent(new Event('submit'));
+        }, 300);
+    }
+});
+</script>
+{% endblock %}

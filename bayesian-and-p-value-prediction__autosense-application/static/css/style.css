@@ -1,0 +1,112 @@
+/* Futuristic Automotive Intelligence Styling for AutoSense Nexus */
+
+:root {
+    --bg-dark: #070b14;
+    --surface-dark: #0f172a;
+    --panel-dark: #1e293b;
+    --cyan-glow: #06b6d4;
+    --emerald-glow: #10b981;
+    --amber-glow: #f59e0b;
+    --rose-glow: #ef4444;
+}
+
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 70%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 30px 30px, 30px 30px;
+}
+
+/* Custom Glassmorphism Panel */
+.glass-panel {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(51, 65, 85, 0.6);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel-glow {
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(6, 182, 212, 0.3);
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+}
+
+/* Futuristic Instrument Gauge styling */
+.instrument-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
+    border: 1px solid rgba(51, 65, 85, 0.8);
+    transition: all 0.3s ease;
+}
+
+.instrument-card:hover {
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.2);
+}
+
+/* Custom Range Slider styling */
+input[type=range] {
+    -webkit-appearance: none;
+    background: #1e293b;
+    border-radius: 9999px;
+    height: 8px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: #06b6d4;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(6, 182, 212, 0.8);
+    border: 2px solid #ffffff;
+}
+
+/* Custom Toggle Switch styling */
+.toggle-checkbox:checked {
+    right: 0;
+    border-color: #06b6d4;
+}
+.toggle-checkbox:checked + .toggle-label {
+    background-color: #06b6d4;
+}
+
+/* Animated Vehicle Telemetry Glow */
+@keyframes pulse-cyan {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.8; }
+}
+
+.animate-glow {
+    animation: pulse-cyan 3s infinite ease-in-out;
+}
+
+/* Vis.js network container custom styling */
+#bayesian-network-graph {
+    width: 100%;
+    height: 520px;
+    background-color: #0b0f19;
+    border-radius: 0.75rem;
+}
+
+/* Pipeline Step Badge Animations */
+.pipeline-step {
+    transition: all 0.4s ease;
+}
+
+.pipeline-step.active {
+    background: rgba(6, 182, 212, 0.2);
+    border-color: #06b6d4;
+    color: #38bdf8;
+    box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
+}
+
+.pipeline-step.completed {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: #10b981;
+    color: #34d399;
+}

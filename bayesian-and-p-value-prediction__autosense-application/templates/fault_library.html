@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}AutoSense Nexus — Fault Library{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+    <!-- Header Banner -->
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+            <h1 class="text-2xl font-display font-bold text-white flex items-center gap-2">
+                <i class="fa-solid fa-book-bookmark text-cyan-400"></i> VEHICLE FAULT REFERENCE LIBRARY
+            </h1>
+            <p class="text-slate-400 text-xs font-mono mt-1">
+                Technical database of supported vehicle fault classifications, typical symptom signatures, and recommended inspection areas.
+            </p>
+        </div>
+    </div>
+
+    <!-- Fault Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for f in faults %}
+        <div class="glass-panel rounded-2xl p-6 border border-slate-800 space-y-4 hover:border-cyan-500/40 transition-all">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-display font-bold text-white">
+                    {{ f.name }}
+                </h2>
+                <span class="px-2.5 py-1 rounded-full font-mono text-[10px] font-bold border" 
+                      style="background-color: {{ f.badge_color }}20; color: {{ f.badge_color }}; border-color: {{ f.badge_color }}40;">
+                    SEVERITY: {{ f.severity }}
+                </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs">
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+                    <span class="text-cyan-400 font-bold block">Typical Symptoms:</span>
+                    <ul class="list-disc list-inside text-slate-300">
+                        {% for sym in f.symptoms %}
+                        <li>{{ sym }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1">
+                    <span class="text-amber-400 font-bold block">Relevant Sensor Trigger:</span>
+                    <ul class="list-disc list-inside text-slate-300">
+                        {% for sen in f.sensors %}
+                        <li>{{ sen }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 font-mono text-xs space-y-1">
+                <span class="text-emerald-400 font-bold block">Recommended Inspection Area:</span>
+                <p class="text-slate-300">{{ f.inspection_area }}</p>
+            </div>
+
+            <div class="text-[11px] font-mono text-slate-400 italic">
+                Likely Causes: {{ f.causes | join(', ') }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Safety Disclaimer Card -->
+    <div class="glass-panel rounded-2xl p-6 border border-amber-500/30 bg-amber-500/5 space-y-2">
+        <div class="text-amber-400 font-mono font-bold text-xs flex items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation"></i> PROFESSIONAL VEHICLE REPAIR DISCLAIMER
+        </div>
+        <p class="text-xs text-slate-300 font-sans leading-relaxed">
+            {{ disclaimer }}
+        </p>
+    </div>
+
+</div>
+{% endblock %}
