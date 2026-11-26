@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Applicant Profile - LoanHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm p-4">
+                <h4 class="fw-bold mb-3 border-bottom pb-2">Profile & Financial Information</h4>
+                <p class="text-muted small">Update your financial details to ensure accurate credit eligibility checks.</p>
+
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">First Name</label>
+                            <input type="text" name="first_name" class="form-control" value="{{ current_user.first_name or '' }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Last Name</label>
+                            <input type="text" name="last_name" class="form-control" value="{{ current_user.last_name or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Phone</label>
+                            <input type="text" name="phone" class="form-control" value="{{ current_user.phone or '' }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Date of Birth</label>
+                            <input type="date" name="date_of_birth" class="form-control" value="{{ current_user.date_of_birth.strftime('%Y-%m-%d') if current_user.date_of_birth else '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">PAN Card Number</label>
+                            <input type="text" name="pan_number" class="form-control text-uppercase" placeholder="ABCDE1234F" value="{{ current_user.pan_number or '' }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Aadhaar Number (12 Digits)</label>
+                            <input type="text" name="aadhaar_number" class="form-control" placeholder="123456789012" value="{{ current_user.aadhaar_number or '' }}">
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Monthly Income (₹)</label>
+                            <input type="number" step="100" name="monthly_income" class="form-control" value="{{ current_user.monthly_income or 0 }}">
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold">Current Monthly Obligations (₹)</label>
+                            <input type="number" step="100" name="current_obligations" class="form-control" value="{{ current_user.current_obligations or 0 }}">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary px-4 fw-semibold">Save Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

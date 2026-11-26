@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Apply for {{ loan_type.name }} - LoanHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card shadow-sm p-4">
+                <div class="border-bottom pb-3 mb-4">
+                    <span class="badge bg-primary mb-2">{{ loan_type.code }}</span>
+                    <h3 class="fw-bold mb-1">{{ loan_type.name }} Application</h3>
+                    <p class="text-muted small mb-0">{{ loan_type.description }}</p>
+                </div>
+
+                <div class="alert alert-info py-2 small mb-4">
+                    <i class="bi bi-info-circle"></i> Interest Rate: <b>{{ loan_type.base_interest_rate }}% per annum</b> | 
+                    Eligible: ₹{{ "{:,.0f}".format(loan_type.min_amount) }} - ₹{{ "{:,.0f}".format(loan_type.max_amount) }}
+                </div>
+
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Requested Amount (₹)</label>
+                        <input type="number" step="1000" name="amount" class="form-control form-control-lg" 
+                               min="{{ loan_type.min_amount }}" max="{{ loan_type.max_amount }}"
+                               value="{{ loan_type.min_amount }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Repayment Tenure (Months)</label>
+                        <input type="number" step="1" name="tenure_months" class="form-control" 
+                               min="{{ loan_type.min_tenure_months }}" max="{{ loan_type.max_tenure_months }}"
+                               value="{{ loan_type.min_tenure_months }}" required>
+                        <div class="form-text">Choose between {{ loan_type.min_tenure_months }} and {{ loan_type.max_tenure_months }} months.</div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Purpose of Loan</label>
+                        <textarea name="purpose" class="form-control" rows="3" placeholder="Briefly describe the purpose of this loan..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-semibold">
+                        Submit Loan Application
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

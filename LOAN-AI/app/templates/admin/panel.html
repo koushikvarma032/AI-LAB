@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Loan Operations Admin - LoanHub{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4 py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-0">Loan Operations Admin Panel</h3>
+            <p class="text-muted small">Manage loan lifecycles, review risk scores, and process approvals.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <span class="badge bg-dark align-self-center px-3 py-2">Role: System Administrator</span>
+        </div>
+    </div>
+
+    <!-- Status Filters -->
+    <div class="card shadow-sm p-3 mb-4">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <span class="fw-semibold small me-2">Filter by Status:</span>
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-sm {% if not current_filter %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                All Applications
+            </a>
+            {% for st in all_statuses %}
+            <a href="{{ url_for('admin.dashboard', status=st) }}" class="btn btn-sm {% if current_filter == st %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                {{ st }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Application #</th>
+                        <th>Applicant</th>
+                        <th>Scheme</th>
+                        <th>Amount</th>
+                        <th>Tenure</th>
+                        <th>Current State</th>
+                        <th>Submitted On</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td class="fw-semibold">{{ app.application_number }}</td>
+                        <td>
+                            <div>{{ app.applicant.full_name }}</div>
+                            <small class="text-muted">{{ app.applicant.email }}</small>
+                        </td>
+                        <td>{{ app.loan_type.name }}</td>
+                        <td class="fw-semibold">₹{{ "{:,.2f}".format(app.requested_amount) }}</td>
+                        <td>{{ app.tenure_months }} mo</td>
+                        <td>
+                            <span class="status-badge status-{{ app.status }}">{{ app.status }}</span>
+                        </td>
+                        <td>{{ app.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <a href="{{ url_for('admin.review', app_id=app.id) }}" class="btn btn-sm btn-primary">
+                                <i class="bi bi-pencil-square"></i> Review
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            No loan applications found matching criteria.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

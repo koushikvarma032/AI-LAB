@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}LoanHub - Smart Lending Made Simple{% endblock %}
+
+{% block content %}
+<section class="hero-section text-center">
+    <div class="container">
+        <h1 class="display-4 fw-bold mb-3">Intelligent Digital Lending & Portfolio Engine</h1>
+        <p class="lead mb-4 mx-auto text-white-50" style="max-width: 650px;">
+            Experience transparent loan disbursement, decimal-accurate amortization schedules, and dynamic risk assessment.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('main.calculator') }}" class="btn btn-warning btn-lg fw-bold px-4">
+                <i class="bi bi-calculator"></i> Calculate EMI
+            </a>
+            {% if not current_user.is_authenticated %}
+            <a href="{{ url_for('auth.register') }}" class="btn btn-outline-light btn-lg px-4">
+                Get Started
+            </a>
+            {% else %}
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-outline-light btn-lg px-4">
+                View Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Explore Our Loan Portfolios</h2>
+        <p class="text-muted">Choose tailored lending options designed for your requirements.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for loan in loan_types %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="badge bg-primary-subtle text-primary fw-bold">{{ loan.code }}</span>
+                    <span class="fs-5 fw-bold text-success">{{ loan.base_interest_rate }}% p.a.</span>
+                </div>
+                <h4 class="fw-bold">{{ loan.name }}</h4>
+                <p class="text-muted flex-grow-1">{{ loan.description }}</p>
+                
+                <hr>
+                <div class="small text-muted mb-3">
+                    <div><i class="bi bi-cash"></i> <b>Range:</b> ₹{{ "{:,.0f}".format(loan.min_amount) }} - ₹{{ "{:,.0f}".format(loan.max_amount) }}</div>
+                    <div><i class="bi bi-clock"></i> <b>Tenure:</b> {{ loan.min_tenure_months }} - {{ loan.max_tenure_months }} Months</div>
+                </div>
+
+                <a href="{{ url_for('main.apply', loan_type_id=loan.id) }}" class="btn btn-outline-primary w-100 fw-semibold">
+                    Apply Now <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Decimal-Safe EMI Calculator - LoanHub{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-lg-5">
+            <div class="card shadow-sm p-4">
+                <h4 class="fw-bold mb-3 d-flex align-items-center gap-2">
+                    <i class="bi bi-calculator text-primary"></i> Loan Calculator
+                </h4>
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Loan Amount (₹)</label>
+                        <input type="number" step="1000" name="principal" class="form-control" value="{{ calculation.principal if calculation else 500000 }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Annual Interest Rate (%)</label>
+                        <input type="number" step="0.1" name="interest_rate" class="form-control" value="{{ calculation.rate if calculation else 10.5 }}" required>
+                        <small class="text-muted">Supports 0% for promotional schemes.</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Tenure (Months)</label>
+                        <input type="number" step="1" name="tenure_months" class="form-control" value="{{ calculation.tenure if calculation else 24 }}" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold">
+                        Calculate Breakdown
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        {% if calculation %}
+        <div class="col-lg-7">
+            <div class="card shadow-sm p-4 mb-4">
+                <h5 class="fw-bold mb-3">Calculated Output</h5>
+                <div class="row text-center g-3">
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded">
+                            <span class="text-muted small">Monthly EMI</span>
+                            <h4 class="fw-bold text-primary mt-1 mb-0">₹{{ "{:,.2f}".format(calculation.monthly_emi) }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded">
+                            <span class="text-muted small">Total Interest</span>
+                            <h4 class="fw-bold text-danger mt-1 mb-0">₹{{ "{:,.2f}".format(calculation.total_interest) }}</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="bg-light p-3 rounded">
+                            <span class="text-muted small">Total Payable</span>
+                            <h4 class="fw-bold text-dark mt-1 mb-0">₹{{ "{:,.2f}".format(calculation.total_payment) }}</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if schedule %}
+            <div class="card shadow-sm p-4">
+                <h6 class="fw-bold mb-3">Amortization Schedule (Initial 12 Months)</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Date</th>
+                                <th>Principal</th>
+                                <th>Interest</th>
+                                <th>Total</th>
+                                <th>Balance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in schedule %}
+                            <tr>
+                                <td>{{ row.installment_number }}</td>
+                                <td>{{ row.due_date.strftime('%b %Y') }}</td>
+                                <td>₹{{ "{:,.2f}".format(row.principal_component) }}</td>
+                                <td>₹{{ "{:,.2f}".format(row.interest_component) }}</td>
+                                <td>₹{{ "{:,.2f}".format(row.total_installment) }}</td>
+                                <td>₹{{ "{:,.2f}".format(row.closing_balance) }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

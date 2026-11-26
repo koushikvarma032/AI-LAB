@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Applicant Dashboard - LoanHub{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Applicant Dashboard</h3>
+            <p class="text-muted mb-0">Welcome, {{ current_user.full_name }}</p>
+        </div>
+        <a href="{{ url_for('main.index') }}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Apply for New Loan
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white py-3">
+            <h5 class="mb-0 fw-bold">Your Loan Applications</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>Application #</th>
+                        <th>Loan Scheme</th>
+                        <th>Amount</th>
+                        <th>Tenure</th>
+                        <th>Monthly EMI</th>
+                        <th>Status</th>
+                        <th>Date Submitted</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for app in applications %}
+                    <tr>
+                        <td class="fw-semibold">{{ app.application_number }}</td>
+                        <td>{{ app.loan_type.name }}</td>
+                        <td>₹{{ "{:,.2f}".format(app.requested_amount) }}</td>
+                        <td>{{ app.tenure_months }} mo</td>
+                        <td class="text-primary fw-semibold">₹{{ "{:,.2f}".format(app.monthly_emi) }}</td>
+                        <td>
+                            <span class="status-badge status-{{ app.status }}">{{ app.status }}</span>
+                        </td>
+                        <td>{{ app.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <a href="{{ url_for('main.application_detail', app_id=app.id) }}" class="btn btn-sm btn-outline-primary">
+                                Details <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5 text-muted">
+                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                            No loan applications submitted yet.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
